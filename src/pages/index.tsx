@@ -2,10 +2,11 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import { GetServerSideProps, NextPage } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+const Home: NextPage<{ name: string }> = ({ name }) => {
   return (
     <>
       <Head>
@@ -16,6 +17,9 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className={styles.description}>
+          <p>
+            {name}
+          </p>
           <p>
             Get started by editing&nbsp;
             <code className={styles.code}>src/pages/index.tsx</code>
@@ -120,4 +124,16 @@ export default function Home() {
       </main>
     </>
   )
+}
+
+export default Home;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const res = await fetch("http://localhost:3000/api/hello")
+  const data: { name: string } = await res.json()
+  return {
+    props: {
+      name: data.name
+    }, // will be passed to the page component as props
+  }
 }
